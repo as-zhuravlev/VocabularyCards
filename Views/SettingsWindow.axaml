@@ -1,0 +1,139 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:vm="using:VocabularyCards.ViewModels"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="600"
+        WindowStartupLocation="CenterScreen"
+        x:Class="VocabularyCards.SettingsWindow"
+        x:DataType="vm:SettingsViewModel"
+        Title="Settings"
+        Icon="/Assets/vc.ico"
+        Width="400"
+        Height="600"
+        Background="#7C96FF">
+    <Window.Styles>
+        <StyleInclude Source="/Views/Styles/GroupBoxStyle.axaml" />
+        <Style Selector="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="NumericUpDown">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="4" />
+        </Style>
+    </Window.Styles>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <HeaderedContentControl Grid.Row="0" Header="DeepL">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="API Key:" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="0"
+                         Grid.Column="1"
+                         VerticalAlignment="Center"
+                         Margin="4"
+                         Text="{Binding DeepLApiKey}" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                           TextAlignment="Center">
+                    API key is required to use DeepL translation service. <LineBreak/>
+                    It is FREE. Please follow instructions at:
+                </TextBlock>
+                <HyperlinkButton Grid.Row="2"
+                                 Grid.Column="0"
+                                 Grid.ColumnSpan="2"
+                                 Foreground="Pink"
+                                 HorizontalAlignment="Center"
+                                 NavigateUri="https://www.deepl.com/fr/pro/change-plan#developer"
+                                 Content="https://www.deepl.com/fr/pro"/>
+            </Grid>
+        </HeaderedContentControl>
+        <HeaderedContentControl Grid.Row="1" Header="Open Router LLM">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="API Key:" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="0"
+                         Grid.Column="1"
+                         VerticalAlignment="Center"
+                         Margin="4"
+                         Text="{Binding OpenRouterApiKey}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                           TextAlignment="Center">
+                    API key is required to get examlpes via Open Router. <LineBreak/>
+                    It is FREE. Please follow instructions at:
+                </TextBlock>
+                <HyperlinkButton Grid.Row="2"
+                                 Grid.Column="0"
+                                 Grid.ColumnSpan="2"
+                                 Foreground="Pink"
+                                 HorizontalAlignment="Center"
+                                 NavigateUri="https://openrouter.ai/settings/keys"
+                                 Content="https://openrouter.ai/settings/keys"/>
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Model:" VerticalAlignment="Center"/>
+                <ComboBox Grid.Row="4"
+                          Grid.Column="1"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Stretch"
+                          Margin="4"
+                          SelectedItem="{Binding OpenRouterModel}"
+                          ItemsSource="{Binding OpenRouterModels}"/>
+            </Grid>
+        </HeaderedContentControl>
+        <HeaderedContentControl Grid.Row="2" Header="Next Pharse Algorithm">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Views Penalty (Pv): "/>
+                <NumericUpDown Grid.Row="0" Grid.Column="1"
+                               Minimum="-10000000" Maximum="10000000" Increment="1"
+                               Value="{Binding PenaltyByViewsCount}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Translation Views (Pc): "/>
+                <NumericUpDown Grid.Row="1" Grid.Column="1"
+                               Minimum="-10000000" Maximum="10000000" Increment="1"
+                               Value="{Binding PenaltyByTranslationViewsCount }"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Period between repeating, min"/>
+                <NumericUpDown Grid.Row="2" Grid.Column="1"
+                               Minimum="-10000000" Maximum="10000000" Increment="1"
+                               Value="{Binding MinTimeBeforePhraseRedisplayInMinutes}"/>
+                <TextBlock TextAlignment="Center" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+                    Next phrase is chosen by minimum of this equation:<LineBreak/>
+                    Pv * (Views count ) + Pc * (Translation views count) <LineBreak/>
+                    + penalty for resantly view
+                </TextBlock>
+            </Grid>
+        </HeaderedContentControl>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Save" Margin="8,8,0,8" Command="{Binding Save}" Click="CloseButton_Click"/>
+            <Button Content="Cancel" Margin="8,8,8,8" Click="CloseButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

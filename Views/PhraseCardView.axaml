@@ -1,0 +1,272 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:v="using:VocabularyCards.Views"
+             xmlns:vm="using:VocabularyCards.ViewModels"
+             xmlns:c="using:VocabularyCards.Views.Controls"
+             xmlns:vc="using:VocabularyCards.Views.Converters"
+             x:Class="VocabularyCards.Views.PhraseCardView"
+             x:DataType="vm:PhraseCardViewModel"
+             BorderThickness="10"
+             BorderBrush="#EEEEEE"
+             CornerRadius="20">
+    <UserControl.Styles>
+        <StyleInclude Source="/Views/Styles/GroupBoxStyle.axaml" />
+        <StyleInclude Source="/Views/Styles/ProgressRingStyle.axaml" />
+    </UserControl.Styles>
+    <UserControl.Resources>
+        <vc:ChatGptUrlConverter x:Key="ChatGptUrlConverter"/>
+    </UserControl.Resources>
+    <Panel>
+        <Grid Margin="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <TextBox IsReadOnly="{Binding !IsEditable}"
+                         MinWidth="300"
+                         FontSize="24"
+                         Margin="4"
+                         Text="{Binding Text}"
+                         Foreground="White"/>
+                <HeaderedContentControl IsEnabled="{Binding IsEditable}"
+                                        Grid.Row="1"
+                                        Header="Translations" >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <ItemsControl Grid.Row="0"
+                                      ItemsSource="{Binding Translations}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Height="34">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0"
+                                                   Text="{Binding Text}"
+                                                   HorizontalAlignment="Left"
+                                                   VerticalAlignment="Center"/>
+                                        <Button Grid.Column="2"
+                                                Content="Delete"
+                                                IsVisible="{Binding #addTranslationPanel.IsVisible}"
+                                                Click="DeleteItem_Click">
+                                            <Image Height="20"
+                                                   Margin="-3"
+                                                   IsEnabled="True">
+                                                <Image.Source>
+                                                    <SvgImage Source="/Assets/delete.svg"/>
+                                                </Image.Source>
+                                            </Image>
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Grid Margin="4,4,0,4"
+                              Grid.Row="1"
+                              Name="addTranslationPanel"
+                              IsVisible="{Binding IsEditable}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Name="newTranslation"
+                                     Margin="4"
+                                     Grid.Column="0"
+                                     KeyUp="newTranslationTextBox_KeyUp"/>
+                            <Button Grid.Column="1"
+                                    Content=" Add "
+                                    Margin="4,4,0,4"
+                                    Command="{Binding AddTranslation}"
+                                    CommandParameter="{Binding #newTranslation.Text}"
+                                    Click="addTranslationButton_Click"/>
+                        </Grid>
+                    </Grid>
+                </HeaderedContentControl>
+                <HeaderedContentControl IsEnabled="{Binding IsEditable}"
+                                        Grid.Row="2"
+                                        Header="Examples" >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <ItemsControl Grid.Row="0"
+                                      ItemsSource="{Binding Examples}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Height="34">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0"
+                                                   Text="{Binding Text}"
+                                                   HorizontalAlignment="Left"
+                                                   VerticalAlignment="Center"/>
+                                        <Button Grid.Column="2"
+                                                Content="Delete"
+                                                IsVisible="{Binding #addExamplePanel.IsVisible}"
+                                                Click="DeleteItem_Click">
+                                            <Image Height="20"
+                                                   Margin="-3"
+                                                   IsEnabled="True">
+                                                <Image.Source>
+                                                    <SvgImage Source="/Assets/delete.svg"/>
+                                                </Image.Source>
+                                            </Image>
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Grid Margin="4,4,0,4"
+                              Grid.Row="1"
+                              Name="addExamplePanel"
+                              IsVisible="{Binding IsEditable}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Name="newExampleTextBox"
+                                     Margin="4"
+                                     Grid.Column="0"
+                                     KeyUp="newExampleTextBox_KeyUp"/>
+                            <Button Grid.Column="1"
+                                    Content=" Add "
+                                    Margin="4,4,0,4"
+                                    Command="{Binding AddExample}"
+                                    CommandParameter="{Binding #newExampleTextBox.Text}"
+                                    Click="addExampleButton_Click"/>
+                        </Grid>
+                    </Grid>
+                </HeaderedContentControl>
+            </Grid>
+            <Grid Grid.Column="1" Margin="8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Grid.RowSpan="2">
+                    <Button Command="{Binding EnableEdit}"
+                            Margin="4"
+                            IsVisible="{Binding !IsEditable}"
+                            ToolTip.Tip="Edit mode">
+                        <Image Height="32" Margin="-4">
+                            <Image.Source>
+                                <SvgImage Source="/Assets/edit.svg"/>
+                            </Image.Source>
+                        </Image>
+                    </Button>
+                    <Button Command="{Binding Save}"
+                            Margin="4"
+                            IsVisible="{Binding IsEditable}"
+                            ToolTip.Tip="Save">
+                        <Image Height="32" Margin="-4">
+                            <Image.Source>
+                                <SvgImage Source="/Assets/save.svg"/>
+                            </Image.Source>
+                        </Image>
+                    </Button>
+                    <Button Command="{Binding TranslateAsync}"
+                            Margin="4"
+                            IsVisible="{Binding IsEditable}"
+                            ToolTip.Tip="Auto Translate">
+                        <Image Height="32" Margin="-4">
+                            <Image.Source>
+                                <SvgImage Source="/Assets/translate.svg"/>
+                            </Image.Source>
+                        </Image>
+                    </Button>
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Orientation="Vertical"
+                            Margin="0,-36,0,-36"
+                            >
+                    <HyperlinkButton
+                            ToolTip.Tip="Ask ChatGpt"
+                            Margin="0,8,0,0"
+                            HorizontalAlignment="Center"
+                            IsVisible="{Binding Text, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                        <HyperlinkButton.NavigateUri>
+                            <MultiBinding Converter="{StaticResource ChatGptUrlConverter}">
+                                <Binding Path="Text"/>
+                                <Binding Path="From"/>
+                            </MultiBinding>
+                        </HyperlinkButton.NavigateUri>
+                        <Image Height="32" Margin="-4">
+                            <Image.Source>
+                                <SvgImage Source="/Assets/openai.svg"/>
+                            </Image.Source>
+                        </Image>
+                    </HyperlinkButton>
+                    <Button HorizontalAlignment="Center"
+                            Width="40"
+                            IsVisible="{Binding IsEditable}"
+                            ToolTip.Tip="Get example from AI"
+                            Command="{Binding GetExampleAsync}"
+                            IsEnabled="{Binding !IsExampleLoading}">
+                        <Image Height="32"
+                               Margin="-4">
+                            <Image.Source>
+                                <SvgImage Source="/Assets/ai.svg"/>
+                            </Image.Source>
+                        </Image>
+                    </Button>
+                    <c:ProgressRing IsVisible="{Binding IsExampleLoading}" Height="32" Width="32"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="4"
+                            Margin="0,-36,0,0"
+                            ToolTip.Tip="Temporarily Hide">
+                    <Button IsVisible="False">
+                        <Image Height="32"
+                               Margin="-4"
+                               IsEnabled="True">
+                            <Image.Source>
+                                <SvgImage Source="/Assets/hide.svg"/>
+                            </Image.Source>
+                        </Image>
+                    </Button>
+                    <Button Name="DeleteButton"
+                            Margin="0,4,0,0" Click="DeleteButton_Click"
+                            ToolTip.Tip="Delete">
+                        <Image Height="32"
+                               Margin="-4"
+                               IsEnabled="True">
+                            <Image.Source>
+                                <SvgImage Source="/Assets/delete.svg"/>
+                            </Image.Source>
+                        </Image>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <Grid x:Name="PhraseGrid"
+              Background="#7C96FF"
+              Margin="4"
+              PointerPressed="PhraseGrid_PointerPressed">
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="64" Text="{Binding Text}"/>
+        </Grid>
+    </Panel>
+</UserControl>

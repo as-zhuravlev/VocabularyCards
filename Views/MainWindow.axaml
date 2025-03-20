@@ -1,0 +1,85 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:v="using:VocabularyCards.Views"
+        xmlns:vm="using:VocabularyCards.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="VocabularyCards.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/vc.ico"
+        Background="#7C96FF"
+        Title="VocabularyCards">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="100"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="From:" Margin="4,6,4,4"/>
+                    <ComboBox x:Name="LanguageFromComboBox"
+                              ItemsSource="{Binding Languages}"
+                              SelectedItem="{Binding LanguageFrom}"/>
+                    <TextBlock Text="To:" Margin="4,6,4,4"/>
+                    <ComboBox x:Name="LanguageToComboBox"
+                              ItemsSource="{Binding Languages}"
+                              SelectedItem="{Binding LanguageTo}"/>
+                    <TextBlock IsVisible="False" Text="Collection:" Margin="4,6,4,4"/>
+                    <ComboBox IsVisible="False" ItemsSource="{Binding Languages}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal">
+                    <Button Height="32"
+                            Width="32"
+                            Click="ImportButton_Click"
+                            ToolTip.Tip="Import words from text file">
+                        <Image Height="28" 
+                               Margin="-2">
+                            <Image.Source>
+                                <SvgImage Source="/Assets/upload.svg"/>
+                            </Image.Source>
+                        </Image>
+                    </Button>
+                    <Button Name="SettingsButton"
+                            Margin="4,0,0,0"
+                            Height="32"
+                            Width="32"
+                            ToolTip.Tip="Settings"
+                            Click="SettingsButton_Click">
+                        <Image Height="28" Margin="-4" IsHitTestVisible="False">
+                            <Image.Source>
+                                <SvgImage Source="/Assets/gear.svg"/>
+                            </Image.Source>
+                        </Image>
+                    </Button>
+                </StackPanel>
+
+            </Grid>
+            <v:PhraseCardView Grid.Row="1"
+                              Margin="40,0,40,0"
+                              DataContext="{Binding CurrentPhraseCard^}"/>
+            <Grid Grid.Row="2" >
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="1" Margin="-80,0,-80,0" Command="{Binding ShowNextCard}" MinHeight="60" MinWidth="160" HorizontalAlignment="Center" FontSize="32" CornerRadius="12">
+                        <TextBlock Text="Next" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                    <Button Grid.Column="3" Margin="-140,0,40,0" Command="{Binding AddNewCard}" MinHeight="60" MinWidth="100" HorizontalAlignment="Center" FontSize="32" CornerRadius="12">
+                        <TextBlock Text="Add" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                </Grid>
+            </Grid>
+        </Grid>
+</Window>
