@@ -15,10 +15,10 @@ public class DeepLTranslator : ITranslator
         _apiKey = apiKey;
     }
 
-    private string GetLanguageCode(Domain.Language language) =>
+    private string GetLanguageCode(Domain.Language language, bool useBritishEnglish =false) =>
         language switch
         {
-            Domain.Language.English => LanguageCode.EnglishBritish,
+            Domain.Language.English => useBritishEnglish ? LanguageCode.EnglishBritish : LanguageCode.English,
             Domain.Language.Spanish => LanguageCode.Spanish,
             Domain.Language.Portuguese => LanguageCode.Portuguese,
             Domain.Language.French => LanguageCode.French,
@@ -37,7 +37,7 @@ public class DeepLTranslator : ITranslator
         TextResult translatedText = await translator.TranslateTextAsync(
               text,
               GetLanguageCode(from),
-              GetLanguageCode(to));
+              GetLanguageCode(to, useBritishEnglish: true));
 
         return translatedText.Text;
     }
