@@ -27,7 +27,7 @@ public class VcDataContext : DbContext
             .Property(p => p.LatestShowUnixTimestamp).HasDefaultValue(0);
 
         modelBuilder.Entity<Translation>()
-            .HasAlternateKey(p => new { p.Text, p.Language });
+            .HasAlternateKey(p => new { p.PhraseId, p.Text, p.Language });
         modelBuilder.Entity<Translation>()
            .HasKey(p => p.Id);
         modelBuilder.Entity<Translation>()
