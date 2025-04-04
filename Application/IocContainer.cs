@@ -68,7 +68,7 @@ public class IocContainer : IDisposable
             .As<DbContextOptions<VcDataContext>>()
             .InstancePerLifetimeScope();
 
-        builder.RegisterType<VcDataContext>().InstancePerLifetimeScope();
+        builder.RegisterType<VcDataContext>().AsSelf().InstancePerLifetimeScope();
 
         builder.RegisterType<PhraseCardService>()
             .As<IPhraseCardService>()

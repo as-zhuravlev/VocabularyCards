@@ -47,11 +47,13 @@ internal class PhraseCardService : IPhraseCardService
         int index = random.Next(phrases.Length);
         Phrase phrase = phrases[index];
 
-        return new PhraseCard(phrase,
+        return await GetCardAsync(phrase, to);
+    }
+
+    private async Task<PhraseCard> GetCardAsync(Phrase phrase, Language to) =>
+    new PhraseCard(phrase,
             await _context.Set<Translation>().Where(t => t.PhraseId == phrase.Id && t.Language == to).ToArrayAsync(),
             await _context.Set<PhraseExample>().Where(e => e.PhraseId == phrase.Id).ToArrayAsync());
-
-    }
 
     private IQueryable<Phrase> GetSearchQuery(Language from, int? collectionId)
     {
@@ -72,18 +74,18 @@ internal class PhraseCardService : IPhraseCardService
         Phrase phrase;
         if (current.IsNew)
         {
-            phrase = await FindExistedAsync(current.Phrase)
-                 ?? (await InsertAsync(current.Phrase)).Single();
-
-            foreach (var t in current.Translations)
+            Phrase? existed = await FindExistedAsync(current.Phrase);
+            if (existed != null)
             {
-                SetPrivatePropertyValue(t, nameof(t.PhraseId), phrase.Id);
+                origin = await GetCardAsync(existed, current.Translations.FirstOrDefault()?.Language ?? Language.Invalid);
             }
+            phrase = existed ?? (await InsertAsync(current.Phrase)).Single();
 
-            foreach (var e in current.Examples)
+            current = current with
             {
-                SetPrivatePropertyValue(e, nameof(e.PhraseId), phrase.Id);
-            }
+                Translations = current.Translations.Select(e => e with { PhraseId = phrase.Id }).ToArray(),
+                Examples = current.Examples.Select(e => e with { PhraseId = phrase.Id }).ToArray()
+            };
         }
         else
         {
